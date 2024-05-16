@@ -8,17 +8,18 @@ import { toast } from "react-toastify";
 const Edit = () => {
   const [saved, setSaved] = useState(false);
   const { id } = useParams();
-  const { data: pokemon } = useQuery<PokeType>({
-    queryKey: ["pokemons"],
+  const { data: pokemon, error } = useQuery<PokeType>({
+    queryKey: ["pokemon"],
     queryFn: async function () {
-      const { data } = await axios.get(
-        `http://localhost:8000/api/pokemon/detail/${id}`,
-        {
-          timeout: 20000,
-        },
-      );
-
-      return data;
+      try {
+        const { data } = await axios.get(
+          `http://localhost:8000/api/pokemon/detail/${id}`,
+        );
+        return data;
+      } catch (error) {
+        console.error("Error al obtener detalles del Pokémon:", error);
+        throw error;
+      }
     },
   });
 
@@ -46,6 +47,7 @@ const Edit = () => {
       setFormData({
         ...formData,
         [parentName]: {
+          //@ts-expect-error todo:check value
           ...formData[parentName],
           [childName]: value,
         },
@@ -53,7 +55,7 @@ const Edit = () => {
     } else {
       setFormData({
         ...formData,
-        [name]: value, // Si no hay subdivisión, actualiza directamente la propiedad del objeto formData
+        [name]: value,
       });
     }
   };
@@ -81,7 +83,6 @@ const Edit = () => {
     },
   });
 
-  // Función para enviar los datos del formulario al servidor
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -91,6 +92,11 @@ const Edit = () => {
       console.error("Error al realizar la mutación:", error);
     }
   };
+
+  if (error) {
+    return <div>Error al obtener detalles del Pokémon: {error.message}</div>;
+  }
+
   return (
     <div className="space-y-10 divide-y divide-gray-900/10">
       <div className="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3">

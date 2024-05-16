@@ -2,7 +2,7 @@ import { CheckIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import type { Pokemon as PokeType } from "../types/pokemon";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -14,27 +14,37 @@ export default function Pokemon() {
       { id: 2, name: name?.toUpperCase(), href: "#" },
     ],
   };
-  const { data: pokemon } = useQuery<PokeType>({
-    queryKey: ["pokemons"],
+  const { data: pokemon, error: pokemonError } = useQuery<PokeType>({
+    queryKey: ["pokemon"],
     queryFn: async function () {
-      const { data } = await axios.get(
-        `http://localhost:8000/api/pokemon/select/${name}`,
-        {
-          timeout: 20000,
-        },
-      );
-
-      return data;
+      try {
+        const { data } = await axios.get(
+          `http://localhost:8000/api/pokemon/select/${name}`,
+        );
+        return data;
+      } catch (error) {
+        console.error("Error al obtener datos del Pokémon:", error);
+        throw error;
+      }
     },
   });
 
   const mutation = useMutation({
     mutationFn: async function () {
-      const { data } = await axios.post<PokeType>(
-        `http://localhost:8000/api/pokemon/`,
-        pokemon,
-      );
-      return data;
+      try {
+        const { data } = await axios.post<PokeType>(
+          `http://localhost:8000/api/pokemon/`,
+          pokemon,
+        );
+        return data;
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        console.error(
+          "Error al agregar el Pokémon:",
+          axiosError.response?.data,
+        );
+        throw error;
+      }
     },
 
     onSuccess: () => {
@@ -62,6 +72,10 @@ export default function Pokemon() {
       console.error("Error al realizar la mutación:", error);
     }
   };
+
+  if (pokemonError) {
+    return <div>Error: {pokemonError.message}</div>;
+  }
 
   return (
     <main>

@@ -13,13 +13,10 @@ export default function PokemonBD() {
   const navigation = useNavigate();
   const { id } = useParams();
   const { data: pokemon } = useQuery<PokeType>({
-    queryKey: ["pokemons"],
+    queryKey: ["pokemon"],
     queryFn: async function () {
       const { data } = await axios.get(
         `http://localhost:8000/api/pokemon/detail/${id}`,
-        {
-          timeout: 20000,
-        },
       );
 
       return data;
@@ -30,9 +27,6 @@ export default function PokemonBD() {
     queryFn: async function () {
       const { data } = await axios.get(
         `http://localhost:8000/api/pokemon/score/${id}`,
-        {
-          timeout: 20000,
-        },
       );
 
       return data;

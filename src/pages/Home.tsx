@@ -9,19 +9,27 @@ export default function Home() {
   const searchParams = new URLSearchParams(location.search);
   const productPage = Number(searchParams.get("limit")) || 10;
   const page = Number(searchParams.get("offset")) || 0;
-  const { data } = useQuery<PokemonList>({
-    queryKey: ["todos"],
+  const { data, error } = useQuery<PokemonList>({
+    queryKey: ["pokemons"],
     queryFn: async function () {
-      const { data } = await axios.get(
-        `http://localhost:8000/api/pokemon/list?limit=${productPage}&offset=${page}`,
-        {
-          timeout: 20000,
-        },
-      );
-
-      return data;
+      try {
+        const { data } = await axios.get(
+          `http://localhost:8000/api/pokemon/list?limit=${productPage}&offset=${page}`,
+          {
+            timeout: 20000,
+          },
+        );
+        return data;
+      } catch (error) {
+        console.error("Error al obtener la lista de Pokémon:", error);
+        throw error;
+      }
     },
   });
+
+  if (error) {
+    return <div>Error al obtener la lista de Pokémon: {error.message}</div>;
+  }
 
   return (
     <main>

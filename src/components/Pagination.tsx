@@ -4,7 +4,7 @@ type Props = {
 
 const Pagination = (props: Props) => {
   const searchParams = new URLSearchParams(location.search);
-  const productPage = Number(searchParams.get("limit")) || 1;
+  const productPage = Number(searchParams.get("limit")) || 10;
   const page = Number(searchParams.get("offset")) || 0;
   console.log(productPage);
 

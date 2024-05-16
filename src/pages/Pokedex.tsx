@@ -6,16 +6,20 @@ import { PokeDex } from "../types/pokemon";
 
 export default function Pokedex() {
   const { data } = useQuery<PokeDex>({
-    queryKey: ["todos"],
+    queryKey: ["pokedex"],
     queryFn: async function () {
-      const { data } = await axios.get<PokeDex>(
-        `http://localhost:8000/api/pokemon/all`,
-        {
-          timeout: 20000,
-        },
-      );
-
-      return data;
+      try {
+        const { data } = await axios.get<PokeDex>(
+          `http://localhost:8000/api/pokemon/all`,
+          {
+            timeout: 20000,
+          },
+        );
+        return data;
+      } catch (error) {
+        console.error("Error al obtener la Pokédex:", error);
+        throw error;
+      }
     },
   });
 
@@ -45,13 +49,19 @@ export default function Pokedex() {
                             scope="col"
                             className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-0"
                           >
-                            Id
+                            Pokemon
                           </th>
                           <th
                             scope="col"
                             className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-0"
                           >
-                            Name
+                            Altura
+                          </th>
+                          <th
+                            scope="col"
+                            className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-0"
+                          >
+                            Peso
                           </th>
                           <th
                             scope="col"
@@ -77,19 +87,39 @@ export default function Pokedex() {
                         {data?.results?.map((pokemon) => (
                           <tr key={pokemon.id}>
                             <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0">
-                              {pokemon.id}
+                              {/* {pokemon.id} */}
+                              <div className="flex items-center">
+                                <div className="h-11 w-11 flex-shrink-0">
+                                  <img
+                                    className="h-11 w-11 rounded-full"
+                                    src={pokemon.sprite_url}
+                                    alt=""
+                                  />
+                                </div>
+                                <div className="ml-4">
+                                  <div className="font-medium text-gray-200">
+                                    {pokemon?.name?.toUpperCase()}
+                                  </div>
+                                  <div className="mt-1 text-gray-500">
+                                    {pokemon.id}
+                                  </div>
+                                </div>
+                              </div>
                             </td>
                             <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0">
-                              {pokemon.name}
+                              {pokemon?.height}
+                            </td>
+                            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0">
+                              {pokemon?.weight}
                             </td>
                             <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0">
                               {new Date(
-                                pokemon.created_at,
+                                pokemon?.created_at,
                               ).toLocaleDateString()}
                             </td>
                             <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0">
                               {new Date(
-                                pokemon.updated_at,
+                                pokemon?.updated_at,
                               ).toLocaleDateString()}
                             </td>
 

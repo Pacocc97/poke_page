@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Pokemon from "./pages/Pokemon";
-// import { Bars3Icon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { FolderIcon, ServerIcon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -231,17 +231,17 @@ export default function App() {
             className="sticky top-0 z-40 flex shrink-0 items-center gap-x-6 
             bg-gray-900 "
           >
-            {/* <button
-                type="button"
-                className="-m-2.5 p-2.5 text-white xl:hidden"
-                onClick={() => setSidebarOpen(true)}
-              >
-                <span className="sr-only">Open sidebar</span>
-                <Bars3Icon
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                />
-              </button> */}
+            <button
+              type="button"
+              className="-m-2.5 p-2.5 text-white xl:hidden"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <span className="sr-only">Open sidebar</span>
+              <Bars3Icon
+                className="h-5 w-5"
+                aria-hidden="true"
+              />
+            </button>
 
             {/* <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
                 <form
