@@ -38,8 +38,7 @@ export default function Pokemon() {
     },
 
     onSuccess: () => {
-      toast(`${name?.toUpperCase()} ha sido agregado al pokedex`),
-        console.log("hola");
+      toast(`${name?.toUpperCase()} ha sido agregado al pokedex`);
     },
 
     onError: () =>
